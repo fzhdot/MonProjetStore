@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyStore - Boutique en ligne</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="StructureDonnees.js"></script>
+
+  <style>
+    /* Variables pour les couleurs et la cohérence */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2c3e50;
+  --accent-color: #e74c3c;
+  --light-gray: #f8f9fa;
+  --dark-gray: #343a40;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fcfcfc;
+}
+
+.navbar-brand {
+  /* Le texte sera semi-gras, un peu plus épais que la normale.§ */
+  font-weight: 600; 
+  /* !important force cette */
+  color: var(--secondary-color) !important;  
+  /* 	Utilise le modèle Flexbox pour organiser les éléments enfants en ligne. */
+  display: flex;
+  align-items: center;
+  /*  gap : 10px  Ajoute un espace de 10 pixels entre les éléments enfants. */
+  gap: 10px;
+}
+
+.nav-link {
+  position: relative;
+  margin: 0 5px;
+  color: var(--secondary-color) !important;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.cart-icon {
+  position: relative;
+  font-size: 1.5rem;
+}
+
+.cart-icon .badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  padding: 0.25em 0.6em;
+  font-size: 0.75rem;
+}
+
+/* Amélioration de la zone de recherche */
+.search-section {
+  background-color: var(--light-gray);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow);
+}
+
+#searchInput {
+  border-radius: 25px;
+  padding: 12px 20px;
+  border: 1px solid #ddd;
+  transition: var(--transition);
+}
+
+#searchInput:focus {
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+  border-color: var(--primary-color);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+  align-items: flex-end;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-label {
+  font-size: 0.9rem;
+  color: var(--dark-gray);
+  margin-bottom: 5px;
+}
+
+.filter-input {
+  border-radius: 20px;
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+}
+
+.filter-btn {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 25px;
+  color: white;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.filter-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+/* Cartes de produits améliorées */
+.product-card {
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: var(--shadow);
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+  position: relative;
+  border: none;
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.product-image-container {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+}
+
+.product-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
+}
+
+.product-info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.product-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: var(--secondary-color);
+}
+
+.product-price {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.add-to-cart {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 0;
+  font-weight: 500;
+  transition: var(--transition);
+  width: 100%;
+}
+
+.add-to-cart:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+/* Badge pour les produits populaires ou en promotion */
+.product-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--accent-color);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 1;
+}
+
+/* Footer amélioré */
+.footer {
+  background-color: var(--light-gray);
+  border-radius: 40px 40px 0 0;
+  padding: 50px 0 30px;
+  margin-top: 50px;
+  border-top: 1px solid #ddd;
+}
+
+.footer-title {
+  color: var(--secondary-color);
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-title::after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 2px;
+  bottom: -10px;
+  left: 0;
+  background-color: var(--primary-color);
+}
+
+.footer-link {
+  color: var(--dark-gray);
+  transition: var(--transition);
+  display: block;
+  margin-bottom: 10px;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: var(--primary-color);
+  transform: translateX(5px);
+}
+
+.footer-icon {
+  margin-right: 10px;
+  color: var(--primary-color);
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  transition: var(--transition);
+}
+
+.social-icon:hover {
+  transform: translateY(-5px);
+  background-color: var(--secondary-color);
+}
+
+.copyright {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  color: var(--dark-gray);
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .product-card {
+    height: 380px;
+  }
+  
+  .footer {
+    border-radius: 30px 30px 0 0;
+  }
+}
+  </style>
+  <!-- Votre CSS personnalisé (insérer le CSS de l'artifact précédent ici) -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navbar améliorée -->,
+   <!--  "navbar-expand-lg" signifie qu'elle se transforme en menu hamburger sur les écrans
+      plus petits que "large". -->
+  <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+    <div class="container">
+      <a class="navbar-brand" href="index2.html">
+        <img src="logo.png" alt="logo" width="40" height="40" class="d-inline-block align-text-top">
+        Uniq’Style
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="accueil.html">Accueil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Services.html">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Propos.html">À propos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="admin.html">Admin</a>
+          </li> 
+          
+
+          <li class="nav-item">
+            <a class="nav-link cart-icon" href="panier.html">
+              <i class="bi bi-cart3"></i>
+              <span class="badge" id="cart-count">0</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Section de recherche et filtres -->
+  <!-- <div class="container mt-4">
+    <div class="search-section">
+      <div class="row">
+        <div class="col-12">
+          <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par catégorie (enfant, femme, homme)">
+        </div>
+      </div> -->
+      
+      <!-- // had la section bach ndiro filtre par prix 3ndna fct f js bach kandiro filtre -->
+      <div class="filter-row mt-3">
+        <div class="filter-group">
+          <label for="prixMin" class="filter-label">Prix minimum :</label>
+          <input type="number" id="prixMin" class="form-control filter-input" placeholder="200">
+        </div>
+        <div class="filter-group">
+          <label for="prixMax" class="filter-label">Prix maximum :</label>
+          <input type="number" id="prixMax" class="form-control filter-input" placeholder="600">
+        </div>
+        <div class="filter-group" style="flex: 0 0 auto;">
+          <button class="btn filter-btn" onclick="fct_filtre_intervalle_prix()">
+            <i class="bi bi-funnel-fill me-2"></i>Filtrer
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filtres rapides par catégorie  femme , enfant , homme-->
+      <div class="mt-3 d-flex flex-wrap gap-2">
+        <!-- mt-3 : marge en haut (margin-top) = espace au-dessus du bloc
+
+    d-flex : le conteneur devient un Flexbox, donc les éléments à l’intérieur (les boutons) seront alignés horizontalement
+
+    flex-wrap : permet de retourner à la ligne si les boutons ne tiennent pas sur une seule ligne -->
+
+<!-- gap-2 : ajoute un petit espace (souvent 0.5rem ou 8px) entre les boutons -->
+
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="filterByCategory('tous')">Tous</button>
+        <!-- btn : style de bouton de base
+
+                  btn-outline-secondary : bouton avec bordure grise (couleur secondaire), sans fond
+
+                  btn-sm : petit bouton -->
+
+        <!-- rounded-pill : bords très arrondis, comme une pilule -->
+
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="filterByCategory('femme')">Femme</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="filterByCategory('homme')">Homme</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="filterByCategory('enfant')">Enfant</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zone principale des produits -->
+  <div class="container">
+    <h2 class="mb-4"> </h2>
+    <div class="row g-4" id="zone_principale_Store">
+      <!-- Les produits seront générés ici via JavaScript -->
+    </div>
+  </div>
+  
+  <!-- Footer amélioré -->
+  <footer id="contact" class="footer">
+    <div class="container">
+      <div class="row">
+        <!-- Colonne 1 : Infos MyStore -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <h5 class="footer-title">MyStore Info</h5>
+          <a href="propos_de_nous.html" class="footer-link">
+            <i class="bi bi-info-circle footer-icon"></i>À propos de nous
+          </a>
+          <a href="Responsabilité_sociale.html" class="footer-link">
+            <i class="bi bi-heart footer-icon"></i>Responsabilité sociale
+          </a>
+          <a href="Blog.html" class="footer-link">
+            <i class="bi bi-newspaper footer-icon"></i>Blog
+          </a>
+          <a href="Carrières.html" class="footer-link">
+            <i class="bi bi-briefcase footer-icon"></i>Carrières
+          </a>
+          <a href="Nos_engagements_écolos.html" class="footer-link">
+            <i class="bi bi-tree footer-icon"></i>Nos engagements écolos
+          </a>
+        </div>
+  
+        <!-- Colonne 2 : Aide -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <h5 class="footer-title">Aide</h5>
+          <a href="Livraison.html" class="footer-link">
+            <i class="bi bi-truck footer-icon"></i>Livraison
+          </a>
+          <a href="Retour_Remboursement.html" class="footer-link">
+            <i class="bi bi-arrow-return-left footer-icon"></i>Retour & Remboursement
+          </a>
+          <a href="Suivi_de_commande.html" class="footer-link">
+            <i class="bi bi-box-seam footer-icon"></i>Suivi de commande
+          </a>
+          <a href="#" class="footer-link">
+            <i class="bi bi-rulers footer-icon"></i>Guide des tailles
+          </a>
+          <a href="Adhésion_MyStore.html" class="footer-link">
+            <i class="bi bi-star footer-icon"></i>Adhésion MyStore+
+          </a>
+        </div>
+  
+        <!-- Colonne 3 : Contact & Paiement -->
+        <div class="col-lg-4 col-md-12 mb-4">
+          <h5 class="footer-title">Contact & Paiement</h5>
+          <p class="footer-link">
+            <i class="bi bi-telephone-fill footer-icon"></i>06 78 90 34 87
+          </p>
+          <p class="footer-link">
+            <i class="bi bi-envelope-fill footer-icon"></i>contact@mystore.com
+          </p>
+          <p class="footer-link">
+            <i class="bi bi-credit-card-2-back footer-icon"></i>Paiement sécurisé
+          </p>
+          
+          <div class="social-icons">
+            <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="copyright">
+        <p>&copy; 2025 MyStore. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- JavaScript pour la fonctionnalité -->
+  <script>
+    // Fonction pour filtrer par catégorie
+    function filterByCategory(category) {
+      let cards = document.querySelectorAll(".product-card");
+      
+      cards.forEach(function (card) {
+        let cardCategory = card.querySelector("img").getAttribute("data-category") || "";
+        let shouldShow = category === 'tous' || cardCategory.toLowerCase() === category.toLowerCase();
+        card.parentElement.style.display = shouldShow ? "block" : "none";
+      });
+    }
+    
+    // Fonction existante pour la recherche
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+      let input = this.value.toLowerCase();
+      let cards = document.querySelectorAll(".product-card");
+  
+      cards.forEach(function (card) {
+        let category = card.querySelector("img").getAttribute("data-category") || "";
+        let title = card.querySelector(".product-title").textContent.toLowerCase();
+        let visible = category.toLowerCase().includes(input) || title.includes(input);
+        card.parentElement.style.display = visible ? "block" : "none";
+      });
+    });
+    
+    // Gestion du panier
+    const panier = JSON.parse(localStorage.getItem('panier')) || [];
+    updateCartCount();
+    
+    function updateCartCount() {
+      document.getElementById('cart-count').textContent = panier.length;
+    }
+    
+    // Cette fonction sera appelée après le chargement des produits
+    function setupAddToCartButtons() {
+      const buttons = document.querySelectorAll('.add-to-cart');
+      
+      buttons.forEach((button) => {
+        button.addEventListener('click', function() {
+          const card = this.closest('.product-card');
+          const nom = card.querySelector('.product-title').textContent;
+          const prix = card.querySelector('.product-price').textContent;
+          const image = card.querySelector('img').getAttribute('src');
+          
+          const produit = { nom, prix, image };
+          panier.push(produit);
+          
+          localStorage.setItem('panier', JSON.stringify(panier));
+          updateCartCount();
+          
+          // Feedback visuel
+          this.innerHTML = '<i class="bi bi-check"></i> Ajouté';
+          this.classList.add('bg-success');
+          
+          setTimeout(() => {
+            this.innerHTML = '<i class="bi bi-cart-plus"></i> Ajouter au panier';
+            this.classList.remove('bg-success');
+          }, 1500);
+        });
+      });
+    }
+    
+    // Fonction pour filtrer par intervalle de prix
+    function fct_filtre_intervalle_prix() {
+      const min = parseFloat(document.getElementById('prixMin').value) || 0;
+      const max = parseFloat(document.getElementById('prixMax').value) || Infinity;
+      
+      let cards = document.querySelectorAll(".product-card");
+      
+      cards.forEach(function (card) {
+        const priceText = card.querySelector(".product-price").textContent;
+        const price = parseFloat(priceText.replace(/[^\d]/g, ''));
+        
+        const visible = price >= min && price <= max;
+        card.parentElement.style.display = visible ? "block" : "none";
+      });
+    }
+
+    
+  </script>
+</body>
+</html>
