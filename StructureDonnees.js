@@ -40,7 +40,7 @@ var produits = [
     new Produit(23, "Hoodie moderne", "300 DH", "homme", "image14.png", "Design moderne.")
 ];
 
-// Fonction unique pour charger et afficher les produits
+// // Fonction unique pour charger et afficher les produits
 function afficherProduits() {
     const container = document.getElementById("zone_principale_Store");
     // les produit seront afficher dans cette zone principale avec id  zone_principale_Store
@@ -419,3 +419,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+
